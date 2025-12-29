@@ -1,3 +1,4 @@
+use dbus::arg::PropMap;
 use dbus::message::MatchRule;
 use dbus::nonblock;
 use dbus_tokio::connection;
@@ -22,27 +23,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Create a future calling D-Bus method each time the interval generates a tick
     let conn2 = conn.clone();
-    // let calls = async move {
-    //     loop {
-    //         interval.tick().await;
-    //         let conn = conn2.clone();
-    //
-    //         println!("Calling Hello...");
-    //         let proxy = nonblock::Proxy::new(
-    //             "com.timekpr.server.user.limits",
-    //             "/com/timekpr/server",
-    //             Duration::from_secs(2),
-    //             conn,
-    //         );
-    //         println!("got proxy...");
-    //         // TODO: Handle timeouts and errors here
-    //         let (x,): (String,) = proxy
-    //             .method_call("com.example.dbustest", "Hello", ("Tokio async/await",))
-    //             .await
-    //             .unwrap();
-    //         println!("{}", x);
-    //     }
-    // };
+    let calls = async move {
+        loop {
+            interval.tick().await;
+            let conn = conn2.clone();
+
+            println!("Calling Hello...");
+            let proxy = nonblock::Proxy::new(
+                "com.timekpr.server",
+                "/com/timekpr/server",
+                Duration::from_secs(2),
+                conn,
+            );
+            println!("got proxy...");
+            // TODO: Handle timeouts and errors here
+            let (user_id, full_name, properties): (i32, String, PropMap) = proxy
+                .method_call(
+                    "com.timekpr.server.user.admin",
+                    "getUserInformation",
+                    ("conrad", "F"),
+                )
+                .await
+                .unwrap();
+            println!(
+                "userid: {} full_name: {} props: {:?}",
+                user_id, full_name, properties
+            );
+        }
+    };
     //
     // To receive D-Bus signals we need to add a match that defines which signals should be forwarded
     // to our application.
@@ -58,25 +66,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // }
 
     // This will never return (except on panic) as there's no exit condition in the calls loop
-    // calls.await;
+    calls.await;
 
     // ..or use the match as a stream if you prefer
-    use futures_util::stream::StreamExt;
-    let (incoming_signal, stream) = conn.add_match(mr).await?.stream();
-    // let stream = stream.for_each(|(_, (source,)): (_, (String,))| {
-    //     println!("Hello from {} happened on the bus!", source);
-    //     async {}
-    // });
-    stream
-        .for_each(|(_, (source,)): (_, (String,))| {
-            println!("Hello from {} happened on the bus!", source);
-            async {}
-        })
-        .await;
-    // futures::join!(stream, calls)
-
+    // use futures_util::stream::StreamExt;
+    // let (incoming_signal, stream) = conn.add_match(mr).await?.stream();
+    // // let stream = stream.for_each(|(_, (source,)): (_, (String,))| {
+    // //     println!("Hello from {} happened on the bus!", source);
+    // //     async {}
+    // // });
+    // stream
+    //     .for_each(|(_, (source,)): (_, (String,))| {
+    //         println!("Hello from {} happened on the bus!", source);
+    //         async {}
+    //     })
+    //     .await;
+    // // futures::join!(stream, calls)
+    //
     // Needed here to ensure the "incoming_signal" object is not dropped too early
-    conn.remove_match(incoming_signal.token()).await?;
+    // conn.remove_match(incoming_signal.token()).await?;
 
     unreachable!()
 }
