@@ -1,12 +1,13 @@
 use anyhow::{Result, anyhow};
-use dbus::arg::{PropMap, RefArg};
+use dbus::arg::PropMap;
+use dbus::arg::cast;
 use dbus::message::MatchRule;
 use dbus::nonblock;
 use dbus_tokio::connection;
-use std::collections::HashMap;
+use serde::Serialize;
 use std::time::Duration;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 struct TimeObservation<T> {
     left_day: T,
     spent_balance: T,
@@ -15,23 +16,6 @@ struct TimeObservation<T> {
     spent_day: T,
 }
 
-use dbus::arg::cast;
-
-fn get_typed_property<T>(props: &PropMap, key: &str) -> Result<T, String>
-where
-    T: Clone,
-    T: 'static,
-{
-    let variant = props
-        .get(key)
-        .ok_or_else(|| format!("Property '{}' not found", key))?;
-
-    cast::<T>(&variant.0)
-        .cloned()
-        .ok_or_else(|| format!("Property '{}' has wrong type", key))
-}
-
-// Usage
 trait FieldMap {
     fn get_typed_property<T>(&self, key: &str) -> anyhow::Result<T>
     where
@@ -87,14 +71,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         panic!("Lost connection to D-Bus: {}", err);
     });
 
+    let nats_client = async_nats::connect("nats://enix.local:4222").await?;
+
     // Create interval - a Stream that will fire an event periodically
     let mut interval = tokio::time::interval(Duration::from_secs(5));
 
     // Create a future calling D-Bus method each time the interval generates a tick
     let conn2 = conn.clone();
     let calls = async move {
-        interval.tick().await;
         loop {
+            interval.tick().await;
             let conn = conn2.clone();
 
             println!("Calling Hello...");
@@ -120,6 +106,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 "userid: {} full_name: {} props: {:?}",
                 user_id, full_name, observation
             );
+
+            let json_payload = serde_json::to_vec(&observation).expect("lets go even more");
+
+            let result = nats_client
+                .publish("time.observervation.cyrus.conrad", json_payload.into())
+                .await;
+
+            println!("publish result: {:?}", result);
         }
     };
     //
