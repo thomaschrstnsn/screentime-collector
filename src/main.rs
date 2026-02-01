@@ -1,8 +1,77 @@
-use dbus::arg::PropMap;
+use anyhow::{Result, anyhow};
+use dbus::arg::{PropMap, RefArg};
 use dbus::message::MatchRule;
 use dbus::nonblock;
 use dbus_tokio::connection;
+use std::collections::HashMap;
 use std::time::Duration;
+
+#[derive(Debug)]
+struct TimeObservation<T> {
+    left_day: T,
+    spent_balance: T,
+    spent_month: T,
+    spent_week: T,
+    spent_day: T,
+}
+
+use dbus::arg::cast;
+
+fn get_typed_property<T>(props: &PropMap, key: &str) -> Result<T, String>
+where
+    T: Clone,
+    T: 'static,
+{
+    let variant = props
+        .get(key)
+        .ok_or_else(|| format!("Property '{}' not found", key))?;
+
+    cast::<T>(&variant.0)
+        .cloned()
+        .ok_or_else(|| format!("Property '{}' has wrong type", key))
+}
+
+// Usage
+trait FieldMap {
+    fn get_typed_property<T>(&self, key: &str) -> anyhow::Result<T>
+    where
+        T: Clone,
+        T: 'static;
+}
+
+impl FieldMap for PropMap {
+    fn get_typed_property<T>(&self, key: &str) -> anyhow::Result<T>
+    where
+        T: Clone,
+        T: 'static,
+    {
+        let variant = self
+            .get(key)
+            .ok_or_else(|| anyhow!("Property '{}' not found", key))?;
+
+        cast::<T>(&variant.0)
+            .cloned()
+            .ok_or_else(|| anyhow!("Property '{}' has wrong type", key))
+    }
+}
+
+impl<T: Clone + 'static> TryFrom<&PropMap> for TimeObservation<T> {
+    type Error = anyhow::Error;
+    fn try_from(value: &PropMap) -> Result<Self, Self::Error> {
+        let left_day = value.get_typed_property("TIME_LEFT_DAY")?;
+        let spent_balance = value.get_typed_property("TIME_SPENT_BALANCE")?;
+        let spent_month = value.get_typed_property("TIME_SPENT_MONTH")?;
+        let spent_week = value.get_typed_property("TIME_SPENT_WEEK")?;
+        let spent_day = value.get_typed_property("TIME_SPENT_DAY")?;
+        Ok(TimeObservation {
+            left_day,
+            spent_balance,
+            spent_month,
+            spent_week,
+            spent_day,
+        })
+    }
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -19,13 +88,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     // Create interval - a Stream that will fire an event periodically
-    let mut interval = tokio::time::interval(Duration::from_secs(2));
+    let mut interval = tokio::time::interval(Duration::from_secs(5));
 
     // Create a future calling D-Bus method each time the interval generates a tick
     let conn2 = conn.clone();
     let calls = async move {
+        interval.tick().await;
         loop {
-            interval.tick().await;
             let conn = conn2.clone();
 
             println!("Calling Hello...");
@@ -45,9 +114,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )
                 .await
                 .unwrap();
+            let observation = TimeObservation::<i32>::try_from(&properties).expect("let go");
+
             println!(
                 "userid: {} full_name: {} props: {:?}",
-                user_id, full_name, properties
+                user_id, full_name, observation
             );
         }
     };
