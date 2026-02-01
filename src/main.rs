@@ -114,6 +114,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .await;
 
             println!("publish result: {:?}", result);
+
+            let result = nats_client.flush().await;
+
+            println!("flush result: {:?}", result);
         }
     };
     //
