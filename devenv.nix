@@ -2,6 +2,6 @@
 
 {
   # https://devenv.sh/packages/
-  packages = with pkgs; [ dbus pkg-config ];
+  packages = with pkgs; [ ];
 
 }
