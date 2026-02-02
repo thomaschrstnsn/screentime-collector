@@ -1,0 +1,218 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/com/timekpr/server">
+  <interface name="org.freedesktop.DBus.Introspectable">
+    <method name="Introspect">
+      <arg direction="out" type="s" />
+    </method>
+  </interface>
+  <interface name="com.timekpr.server.user.limits">
+    <method name="requestTimeLimits">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="requestTimeLeft">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+  </interface>
+  <interface name="com.timekpr.server.user.sessionattributes">
+    <method name="processUserSessionAttributes">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="s" name="pWhat" />
+      <arg direction="in"  type="s" name="pKey" />
+      <arg direction="in"  type="s" name="pValue" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+  </interface>
+  <interface name="com.timekpr.server.user.admin">
+    <method name="getUserList">
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+      <arg direction="out" type="aas" />
+    </method>
+    <method name="getUserInformation">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="s" name="pInfoLvl" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+      <arg direction="out" type="a{sv}" />
+    </method>
+    <method name="setAllowedDays">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="as" name="pDayList" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setAllowedHours">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="s" name="pDayNumber" />
+      <arg direction="in"  type="a{sa{si}}" name="pHourList" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimeLimitForDays">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="ai" name="pDayLimits" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTrackInactive">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="b" name="pTrackInactive" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setHideTrayIcon">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="b" name="pHideTrayIcon" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setLockoutType">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="s" name="pLockoutType" />
+      <arg direction="in"  type="s" name="pWakeFrom" />
+      <arg direction="in"  type="s" name="pWakeTo" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimeLimitForWeek">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="i" name="pTimeLimitWeek" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimeLimitForMonth">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="i" name="pTimeLimitMonth" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimeLeft">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="s" name="pOperation" />
+      <arg direction="in"  type="i" name="pTimeLeft" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setPlayTimeEnabled">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="b" name="pPlayTimeEnabled" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setPlayTimeLimitOverride">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="b" name="pPlayTimeLimitOverride" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setPlayTimeUnaccountedIntervalsEnabled">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="b" name="pPlayTimeUnaccountedIntervalsEnabled" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setPlayTimeAllowedDays">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="as" name="pPlayTimeAllowedDays" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setPlayTimeLimitsForDays">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="ai" name="pPlayTimeLimits" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setPlayTimeActivities">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="aas" name="pPlayTimeActivities" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setPlayTimeLeft">
+      <arg direction="in"  type="s" name="pUserName" />
+      <arg direction="in"  type="s" name="pOperation" />
+      <arg direction="in"  type="i" name="pTimeLeft" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+  </interface>
+  <interface name="com.timekpr.server.admin">
+    <method name="getTimekprConfiguration">
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+      <arg direction="out" type="a{sv}" />
+    </method>
+    <method name="setTimekprLogLevel">
+      <arg direction="in"  type="i" name="pLogLevel" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprPollTime">
+      <arg direction="in"  type="i" name="pPollTimeSecs" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprSaveTime">
+      <arg direction="in"  type="i" name="pSaveTimeSecs" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprTrackInactive">
+      <arg direction="in"  type="b" name="pTrackInactive" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprTerminationTime">
+      <arg direction="in"  type="i" name="pTerminationTimeSecs" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprFinalWarningTime">
+      <arg direction="in"  type="i" name="pFinalWarningTimeSecs" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprFinalNotificationTime">
+      <arg direction="in"  type="i" name="pFinalNotificationTimeSecs" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprSessionsCtrl">
+      <arg direction="in"  type="as" name="pSessionsCtrl" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprSessionsExcl">
+      <arg direction="in"  type="as" name="pSessionsExcl" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprUsersExcl">
+      <arg direction="in"  type="as" name="pUsersExcl" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprPlayTimeEnabled">
+      <arg direction="in"  type="b" name="pPlayTimeEnabled" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="setTimekprPlayTimeEnhancedActivityMonitorEnabled">
+      <arg direction="in"  type="b" name="pPlayTimeAdvancedSearchEnabled" />
+      <arg direction="out" type="i" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="logCachedProcesses">
+      <arg direction="in"  type="s" name="pUserId" />
+    </method>
+  </interface>
+  <node name="user"/>
+</node>
+
