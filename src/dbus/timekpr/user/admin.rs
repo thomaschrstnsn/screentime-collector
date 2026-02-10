@@ -24,8 +24,8 @@ pub trait admin {
     #[zbus(name = "getUserInformation")]
     fn get_user_information(
         &self,
-        pUserName: &str,
-        pInfoLvl: &str,
+        p_user_name: &str,
+        p_info_lvl: &str,
     ) -> zbus::Result<(
         i32,
         String,
@@ -38,130 +38,134 @@ pub trait admin {
 
     /// setAllowedDays method
     #[zbus(name = "setAllowedDays")]
-    fn set_allowed_days(&self, pUserName: &str, pDayList: &[&str]) -> zbus::Result<(i32, String)>;
+    fn set_allowed_days(
+        &self,
+        p_user_name: &str,
+        p_day_list: &[&str],
+    ) -> zbus::Result<(i32, String)>;
 
     /// setAllowedHours method
     #[zbus(name = "setAllowedHours")]
     fn set_allowed_hours(
         &self,
-        pUserName: &str,
-        pDayNumber: &str,
-        pHourList: std::collections::HashMap<&str, std::collections::HashMap<&str, i32>>,
+        p_user_name: &str,
+        p_day_number: &str,
+        p_hour_list: std::collections::HashMap<&str, std::collections::HashMap<&str, i32>>,
     ) -> zbus::Result<(i32, String)>;
 
     /// setHideTrayIcon method
     #[zbus(name = "setHideTrayIcon")]
     fn set_hide_tray_icon(
         &self,
-        pUserName: &str,
-        pHideTrayIcon: bool,
+        p_user_name: &str,
+        p_hide_tray_icon: bool,
     ) -> zbus::Result<(i32, String)>;
 
     /// setLockoutType method
     #[zbus(name = "setLockoutType")]
     fn set_lockout_type(
         &self,
-        pUserName: &str,
-        pLockoutType: &str,
-        pWakeFrom: &str,
-        pWakeTo: &str,
+        p_user_name: &str,
+        p_lockout_type: &str,
+        p_wake_from: &str,
+        p_wake_to: &str,
     ) -> zbus::Result<(i32, String)>;
 
     /// setPlayTimeActivities method
     #[zbus(name = "setPlayTimeActivities")]
     fn set_play_time_activities(
         &self,
-        pUserName: &str,
-        pPlayTimeActivities: &[&[&str]],
+        p_user_name: &str,
+        p_play_time_activities: &[&[&str]],
     ) -> zbus::Result<(i32, String)>;
 
     /// setPlayTimeAllowedDays method
     #[zbus(name = "setPlayTimeAllowedDays")]
     fn set_play_time_allowed_days(
         &self,
-        pUserName: &str,
-        pPlayTimeAllowedDays: &[&str],
+        p_user_name: &str,
+        p_play_time_allowed_days: &[&str],
     ) -> zbus::Result<(i32, String)>;
 
     /// setPlayTimeEnabled method
     #[zbus(name = "setPlayTimeEnabled")]
     fn set_play_time_enabled(
         &self,
-        pUserName: &str,
-        pPlayTimeEnabled: bool,
+        p_user_name: &str,
+        p_play_time_enabled: bool,
     ) -> zbus::Result<(i32, String)>;
 
     /// setPlayTimeLeft method
     #[zbus(name = "setPlayTimeLeft")]
     fn set_play_time_left(
         &self,
-        pUserName: &str,
-        pOperation: &str,
-        pTimeLeft: i32,
+        p_user_name: &str,
+        p_operation: &str,
+        p_time_left: i32,
     ) -> zbus::Result<(i32, String)>;
 
     /// setPlayTimeLimitOverride method
     #[zbus(name = "setPlayTimeLimitOverride")]
     fn set_play_time_limit_override(
         &self,
-        pUserName: &str,
-        pPlayTimeLimitOverride: bool,
+        p_user_name: &str,
+        p_play_time_limit_override: bool,
     ) -> zbus::Result<(i32, String)>;
 
     /// setPlayTimeLimitsForDays method
     #[zbus(name = "setPlayTimeLimitsForDays")]
     fn set_play_time_limits_for_days(
         &self,
-        pUserName: &str,
-        pPlayTimeLimits: &[i32],
+        p_user_name: &str,
+        p_play_time_limits: &[i32],
     ) -> zbus::Result<(i32, String)>;
 
     /// setPlayTimeUnaccountedIntervalsEnabled method
     #[zbus(name = "setPlayTimeUnaccountedIntervalsEnabled")]
     fn set_play_time_unaccounted_intervals_enabled(
         &self,
-        pUserName: &str,
-        pPlayTimeUnaccountedIntervalsEnabled: bool,
+        p_user_name: &str,
+        p_play_time_unaccounted_intervals_enabled: bool,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimeLeft method
     #[zbus(name = "setTimeLeft")]
     fn set_time_left(
         &self,
-        pUserName: &str,
-        pOperation: &str,
-        pTimeLeft: i32,
+        p_user_name: &str,
+        p_operation: &str,
+        p_time_left: i32,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimeLimitForDays method
     #[zbus(name = "setTimeLimitForDays")]
     fn set_time_limit_for_days(
         &self,
-        pUserName: &str,
-        pDayLimits: &[i32],
+        p_user_name: &str,
+        p_day_limits: &[i32],
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimeLimitForMonth method
     #[zbus(name = "setTimeLimitForMonth")]
     fn set_time_limit_for_month(
         &self,
-        pUserName: &str,
-        pTimeLimitMonth: i32,
+        p_user_name: &str,
+        p_time_limit_month: i32,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimeLimitForWeek method
     #[zbus(name = "setTimeLimitForWeek")]
     fn set_time_limit_for_week(
         &self,
-        pUserName: &str,
-        pTimeLimitWeek: i32,
+        p_user_name: &str,
+        p_time_limit_week: i32,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTrackInactive method
     #[zbus(name = "setTrackInactive")]
     fn set_track_inactive(
         &self,
-        pUserName: &str,
-        pTrackInactive: bool,
+        p_user_name: &str,
+        p_track_inactive: bool,
     ) -> zbus::Result<(i32, String)>;
 }

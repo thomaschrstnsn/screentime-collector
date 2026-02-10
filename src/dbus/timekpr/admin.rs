@@ -32,65 +32,68 @@ pub trait admin {
 
     /// logCachedProcesses method
     #[zbus(name = "logCachedProcesses")]
-    fn log_cached_processes(&self, pUserId: &str) -> zbus::Result<()>;
+    fn log_cached_processes(&self, p_user_id: &str) -> zbus::Result<()>;
 
     /// setTimekprFinalNotificationTime method
     #[zbus(name = "setTimekprFinalNotificationTime")]
     fn set_timekpr_final_notification_time(
         &self,
-        pFinalNotificationTimeSecs: i32,
+        p_final_notification_time_secs: i32,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimekprFinalWarningTime method
     #[zbus(name = "setTimekprFinalWarningTime")]
     fn set_timekpr_final_warning_time(
         &self,
-        pFinalWarningTimeSecs: i32,
+        p_final_warning_time_secs: i32,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimekprLogLevel method
     #[zbus(name = "setTimekprLogLevel")]
-    fn set_timekpr_log_level(&self, pLogLevel: i32) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_log_level(&self, p_log_level: i32) -> zbus::Result<(i32, String)>;
 
     /// setTimekprPlayTimeEnabled method
     #[zbus(name = "setTimekprPlayTimeEnabled")]
-    fn set_timekpr_play_time_enabled(&self, pPlayTimeEnabled: bool) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_play_time_enabled(
+        &self,
+        p_play_time_enabled: bool,
+    ) -> zbus::Result<(i32, String)>;
 
     /// setTimekprPlayTimeEnhancedActivityMonitorEnabled method
     #[zbus(name = "setTimekprPlayTimeEnhancedActivityMonitorEnabled")]
     fn set_timekpr_play_time_enhanced_activity_monitor_enabled(
         &self,
-        pPlayTimeAdvancedSearchEnabled: bool,
+        p_play_time_advanced_search_enabled: bool,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimekprPollTime method
     #[zbus(name = "setTimekprPollTime")]
-    fn set_timekpr_poll_time(&self, pPollTimeSecs: i32) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_poll_time(&self, p_poll_time_secs: i32) -> zbus::Result<(i32, String)>;
 
     /// setTimekprSaveTime method
     #[zbus(name = "setTimekprSaveTime")]
-    fn set_timekpr_save_time(&self, pSaveTimeSecs: i32) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_save_time(&self, p_save_time_secs: i32) -> zbus::Result<(i32, String)>;
 
     /// setTimekprSessionsCtrl method
     #[zbus(name = "setTimekprSessionsCtrl")]
-    fn set_timekpr_sessions_ctrl(&self, pSessionsCtrl: &[&str]) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_sessions_ctrl(&self, p_sessions_ctrl: &[&str]) -> zbus::Result<(i32, String)>;
 
     /// setTimekprSessionsExcl method
     #[zbus(name = "setTimekprSessionsExcl")]
-    fn set_timekpr_sessions_excl(&self, pSessionsExcl: &[&str]) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_sessions_excl(&self, p_sessions_excl: &[&str]) -> zbus::Result<(i32, String)>;
 
     /// setTimekprTerminationTime method
     #[zbus(name = "setTimekprTerminationTime")]
     fn set_timekpr_termination_time(
         &self,
-        pTerminationTimeSecs: i32,
+        p_termination_time_secs: i32,
     ) -> zbus::Result<(i32, String)>;
 
     /// setTimekprTrackInactive method
     #[zbus(name = "setTimekprTrackInactive")]
-    fn set_timekpr_track_inactive(&self, pTrackInactive: bool) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_track_inactive(&self, p_track_inactive: bool) -> zbus::Result<(i32, String)>;
 
     /// setTimekprUsersExcl method
     #[zbus(name = "setTimekprUsersExcl")]
-    fn set_timekpr_users_excl(&self, pUsersExcl: &[&str]) -> zbus::Result<(i32, String)>;
+    fn set_timekpr_users_excl(&self, p_users_excl: &[&str]) -> zbus::Result<(i32, String)>;
 }

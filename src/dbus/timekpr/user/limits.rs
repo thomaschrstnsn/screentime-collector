@@ -22,9 +22,9 @@ use zbus::proxy;
 pub trait limits {
     /// requestTimeLeft method
     #[zbus(name = "requestTimeLeft")]
-    fn request_time_left(&self, pUserName: &str) -> zbus::Result<(i32, String)>;
+    fn request_time_left(&self, p_user_name: &str) -> zbus::Result<(i32, String)>;
 
     /// requestTimeLimits method
     #[zbus(name = "requestTimeLimits")]
-    fn request_time_limits(&self, pUserName: &str) -> zbus::Result<(i32, String)>;
+    fn request_time_limits(&self, p_user_name: &str) -> zbus::Result<(i32, String)>;
 }

@@ -27,9 +27,9 @@ pub trait sessionattributes {
     #[zbus(name = "processUserSessionAttributes")]
     fn process_user_session_attributes(
         &self,
-        pUserName: &str,
-        pWhat: &str,
-        pKey: &str,
-        pValue: &str,
+        p_user_name: &str,
+        p_what: &str,
+        p_key: &str,
+        p_value: &str,
     ) -> zbus::Result<(i32, String)>;
 }

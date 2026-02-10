@@ -58,7 +58,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // let json_payload = serde_json::to_vec(&observation).expect("lets go even more");
         //
         // let result = nats_client
-        //     .publish("time.observervation.cyrus.conrad", json_payload.into())
+        //     .publish("time.obs.cyrus.conrad", json_payload.into())
         //     .await;
         //
         // println!("publish result: {:?}", result);
