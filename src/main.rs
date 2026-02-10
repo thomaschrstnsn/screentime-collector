@@ -22,15 +22,10 @@ struct Args {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct TimeObservation {
-    #[serde(rename = "TIME_LEFT_DAY")]
     left_day: i32,
-    #[serde(rename = "TIME_SPENT_BALANCE")]
     spent_balance: i32,
-    #[serde(rename = "TIME_SPENT_MONTH")]
     spent_month: i32,
-    #[serde(rename = "TIME_SPENT_WEEK")]
     spent_week: i32,
-    #[serde(rename = "TIME_SPENT_DAY")]
     spent_day: i32,
 }
 
@@ -38,9 +33,23 @@ impl TryFrom<&HashMap<String, OwnedValue>> for TimeObservation {
     type Error = anyhow::Error;
 
     fn try_from(value: &HashMap<String, OwnedValue>) -> std::result::Result<Self, Self::Error> {
-        let json_value = serde_json::to_value(value)?;
-        let observation: TimeObservation = serde_json::from_value(json_value)?;
-        Ok(observation)
+        let get_i32 = |key: &str| -> anyhow::Result<i32> {
+            value
+                .get(key)
+                .ok_or_else(|| anyhow::anyhow!("missing key: {}", key))
+                .and_then(|v| {
+                    let json = serde_json::to_value(v)?;
+                    Ok(serde_json::from_value(json)?)
+                })
+        };
+
+        Ok(TimeObservation {
+            left_day: get_i32("TIME_LEFT_DAY")?,
+            spent_balance: get_i32("TIME_SPENT_BALANCE")?,
+            spent_month: get_i32("TIME_SPENT_MONTH")?,
+            spent_week: get_i32("TIME_SPENT_WEEK")?,
+            spent_day: get_i32("TIME_SPENT_DAY")?,
+        })
     }
 }
 
@@ -85,5 +94,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
             tracing::debug!("flush successful");
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::Value;
+
+    #[test]
+    fn test_serialization() {
+        let observation = TimeObservation {
+            left_day: 3600,
+            spent_balance: 0,
+            spent_month: 18000,
+            spent_week: 7200,
+            spent_day: 3600,
+        };
+
+        let json_str = serde_json::to_string(&observation).expect("failed to serialize");
+        let json_value: Value = serde_json::from_str(&json_str).expect("failed to deserialize");
+
+        // Verify that keys are lowercase and values match
+        assert_eq!(json_value["left_day"], 3600);
+        assert_eq!(json_value["spent_balance"], 0);
+        assert_eq!(json_value["spent_month"], 18000);
+        assert_eq!(json_value["spent_week"], 7200);
+        assert_eq!(json_value["spent_day"], 3600);
     }
 }
