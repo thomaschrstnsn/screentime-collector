@@ -18,8 +18,8 @@
 //! [Writing a client proxy]: https://z-galaxy.github.io/zbus/client.html
 //! [D-Bus standard interfaces]: https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces,
 use zbus::proxy;
-#[proxy(interface = "com.timekpr.server.user.admin", assume_defaults = true)]
-pub trait admin {
+#[proxy(interface = "com.timekpr.server.user.admin")]
+pub trait Admin {
     /// getUserInformation method
     #[zbus(name = "getUserInformation")]
     fn get_user_information(

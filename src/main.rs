@@ -32,15 +32,14 @@ struct TimeObservation {
 impl TryFrom<&HashMap<String, OwnedValue>> for TimeObservation {
     type Error = anyhow::Error;
 
-    fn try_from(value: &HashMap<String, OwnedValue>) -> std::result::Result<Self, Self::Error> {
+    fn try_from(value: &HashMap<String, OwnedValue>) -> anyhow::Result<Self, Self::Error> {
         let get_i32 = |key: &str| -> anyhow::Result<i32> {
-            value
+            let value = value
                 .get(key)
-                .ok_or_else(|| anyhow::anyhow!("missing key: {}", key))
-                .and_then(|v| {
-                    let json = serde_json::to_value(v)?;
-                    Ok(serde_json::from_value(json)?)
-                })
+                .ok_or_else(|| anyhow::anyhow!("missing key: {}", key))?;
+
+            let i = value.downcast_ref()?;
+            Ok(i)
         };
 
         Ok(TimeObservation {
@@ -62,9 +61,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let nats_client = async_nats::connect(&args.nats_url).await?;
 
-    let connection = Connection::session().await?;
+    let connection = Connection::system().await?;
 
-    let proxy = dbus::timekpr::user::admin::adminProxy::new(&connection).await?;
+    let proxy = dbus::timekpr::user::admin::AdminProxy::new(
+        &connection,
+        "com.timekpr.server",
+        "/com/timekpr/server",
+    )
+    .await?;
 
     let mut interval = tokio::time::interval(Duration::from_secs(5));
 
@@ -72,7 +76,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         interval.tick().await;
 
         for user in &args.users {
-            let (_i32, _string, properties) = proxy.get_user_information(user, "").await?;
+            let (_i32, _string, properties) = proxy.get_user_information(user, "F").await?;
+
             let observation =
                 TimeObservation::try_from(&properties).expect("failed to parse observation");
 
@@ -83,7 +88,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let result = nats_client.publish(topic, json_payload.into()).await;
 
             match result {
-                Ok(_) => tracing::debug!("published for user: {}", user),
+                Ok(_) => tracing::info!("published for user: {} => {:?}", user, observation),
                 Err(e) => tracing::error!("publish failed for {}: {:?}", user, e),
             }
         }
